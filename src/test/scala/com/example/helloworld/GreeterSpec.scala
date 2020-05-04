@@ -1,18 +1,16 @@
-//#full-example
 package com.example.helloworld
-
-import scala.concurrent.Await
-
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
-import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import akka.actor.ActorSystem
 import akka.grpc.GrpcClientSettings
-import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.{Keep, Sink}
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.Span
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class GreeterSpec
   extends Matchers
@@ -34,10 +32,9 @@ class GreeterSpec
   }
 
   implicit val clientSystem = ActorSystem("HelloWorldClient")
-  implicit val mat = ActorMaterializer()
 
   val client = {
-    implicit val ec = clientSystem.dispatcher
+    import clientSystem.dispatcher
     GreeterServiceClient(GrpcClientSettings.fromConfig("helloworld.GreeterService"))
   }
 
@@ -48,9 +45,8 @@ class GreeterSpec
 
   "GreeterService" should {
     "reply to single request" in {
-      val reply = client.sayHello(HelloRequest("Alice"))
+      val reply = client.sayHelloForever(HelloRequest("Alice")).toMat(Sink.head)(Keep.right).run()
       reply.futureValue should ===(HelloReply("Hello, Alice"))
     }
   }
 }
-//#full-example
