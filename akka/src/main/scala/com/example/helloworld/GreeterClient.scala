@@ -19,9 +19,13 @@ object GreeterClient {
         client.sayHelloForever(HelloRequest("Traefik")).take(3).drop(2)
 
     for {
-      _ <- 1 to 10
+      _ <- 1 to 100
     } {
       for {
+        _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
+        _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
+        _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
+        _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
         _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
         _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))
         _ <- responseStream.runForeach(reply => println(s"got streaming reply: ${reply.message}"))

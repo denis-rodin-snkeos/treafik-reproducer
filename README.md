@@ -1,3 +1,4 @@
-Build using: `sbt docker:publishLocal`
-run using: `docker-compose up`
-run client using: `sbt runMain com.example.helloworld.GreeterClient`
+Build using: `sbt akka/docker:publishLocal`
+run server using: `docker-compose up`
+run client using: `sbt akka/runMain com.example.helloworld.GreeterClient`
+run gatling client using: `sbt gatling/run`
