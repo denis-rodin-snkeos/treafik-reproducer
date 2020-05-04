@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.2.1
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+    - "--api.insecure=false"
+    - "--providers.docker=true"
+    - "--entrypoints.web.address=:80"
+    - "--accesslog"
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      # - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+  server:
+    image: traefik-reproducer:1.0
+    entrypoint: /opt/docker/bin/greeter-server
+    ports:
+      - "8888:8080"
+    labels:
+      - "traefik.http.routers.grpc-server.rule=Host(`GreeterService`)"
+      - "traefik.http.routers.grpc-server.service=grpc-server"
+      - "traefik.http.routers.grpc-server.entrypoints=web"
+      - "traefik.http.services.grpc-server.loadbalancer.server.scheme=h2c"
