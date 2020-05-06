@@ -32,7 +32,7 @@ class HelloSimulation extends Simulation {
 
   // this will create 1 channel per scn() call and per injected user
   setUp {
-    scn("Traefik").inject(atOnceUsers(100))
+    scn("gatling").inject(atOnceUsers(100))
   }.protocols(grpcConf)
 
   private def helloRequest(name: String): GrpcCallActionBuilder[HelloRequest, HelloReply] =
