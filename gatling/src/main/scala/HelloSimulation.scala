@@ -27,12 +27,12 @@ class HelloSimulation extends Simulation {
     val request = exec(helloRequest(name)).pause(1.second)
 
     // scenario(name).during(30.seconds)(request)
-    scenario(name).repeat(10)(request)
+    scenario(name).repeat(20)(request)
   }
 
   // this will create 1 channel per scn() call and per injected user
   setUp {
-    scn("gatling").inject(atOnceUsers(100))
+    scn("gatling").inject(atOnceUsers(500))
   }.protocols(grpcConf)
 
   private def helloRequest(name: String): GrpcCallActionBuilder[HelloRequest, HelloReply] =
